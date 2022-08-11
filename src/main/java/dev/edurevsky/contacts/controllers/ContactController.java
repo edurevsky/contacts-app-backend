@@ -3,7 +3,11 @@ package dev.edurevsky.contacts.controllers;
 import dev.edurevsky.contacts.dtos.NewContactRequest;
 import dev.edurevsky.contacts.models.Contact;
 import dev.edurevsky.contacts.services.FindContactByIdService;
+import dev.edurevsky.contacts.services.FindPaginatedContactsService;
 import dev.edurevsky.contacts.services.SaveContactService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,10 +21,12 @@ public class ContactController {
 
     private final SaveContactService saveContactService;
     private final FindContactByIdService findContactByIdService;
+    private final FindPaginatedContactsService findPaginatedContactsService;
 
-    public ContactController(SaveContactService saveContactService, FindContactByIdService findContactByIdService) {
+    public ContactController(SaveContactService saveContactService, FindContactByIdService findContactByIdService, FindPaginatedContactsService findPaginatedContactsService) {
         this.saveContactService = saveContactService;
         this.findContactByIdService = findContactByIdService;
+        this.findPaginatedContactsService = findPaginatedContactsService;
     }
 
     @PostMapping
@@ -34,5 +40,11 @@ public class ContactController {
     public ResponseEntity<Contact> findById(@PathVariable("id") Long id) {
         Contact contact = findContactByIdService.execute(id);
         return ResponseEntity.ok(contact);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<Contact>> findAllPaginated(@PageableDefault(size = 15, sort = {"name"}) Pageable pageable) {
+        Page<Contact> contacts = findPaginatedContactsService.execute(pageable);
+        return ResponseEntity.ok(contacts);
     }
 }
