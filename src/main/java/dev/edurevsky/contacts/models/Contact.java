@@ -2,7 +2,7 @@ package dev.edurevsky.contacts.models;
 
 import javax.persistence.*;
 
-import static javax.persistence.GenerationType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "contacts")
