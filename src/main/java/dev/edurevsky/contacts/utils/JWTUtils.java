@@ -3,10 +3,12 @@ package dev.edurevsky.contacts.utils;
 import dev.edurevsky.contacts.models.Role;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class JWTUtils {
         this.userDetailsService = userDetailsService;
     }
 
-    public String generateToken(String username, List<Role> authorities) {
+    public String generateToken(String username, Collection<? extends GrantedAuthority> authorities) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         String typ = Header.JWT_TYPE;
         return Jwts.builder()
