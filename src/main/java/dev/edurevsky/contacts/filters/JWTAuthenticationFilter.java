@@ -31,8 +31,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getJwt(String token) {
+        if (token == null) {
+            return null;
+        }
         if (token.startsWith("Bearer ")) {
-            return token.substring(7, token.length());
+            return token.substring(7);
         }
         return null;
     }

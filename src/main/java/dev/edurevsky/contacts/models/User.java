@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -24,7 +25,9 @@ public class User {
     private String password;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(
+            fetch = EAGER
+    )
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),

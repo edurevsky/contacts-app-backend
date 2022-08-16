@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static org.springframework.http.HttpMethod.POST;
+
 @Configuration
 public class SecurityConfiguration {
 
@@ -30,7 +32,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeHttpRequests()
+                .formLogin().disable()
+                .httpBasic()
+                .and()
+                .authorizeRequests()
+                .antMatchers(POST, "/login").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
