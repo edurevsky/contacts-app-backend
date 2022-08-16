@@ -31,6 +31,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic()
@@ -60,7 +62,8 @@ public class SecurityConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("*")
-                        .allowedMethods("GET", "PUT", "POST", "DELETE");
+                        .allowedMethods("GET", "PUT", "POST", "DELETE")
+                        .exposedHeaders("Authorization");
             }
         };
     }
