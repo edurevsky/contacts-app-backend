@@ -14,6 +14,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -40,7 +42,12 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         ApplicationUser userDetails = ((ApplicationUser) authResult.getPrincipal());
         String token = jwtUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+        String refreshToken = jwtUtils.generateRefreshToken(userDetails.getUsername());
         response.addHeader("Authorization", "Bearer " + token);
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("refreshToken", refreshToken);
+        response.setContentType("application/json");
+        new ObjectMapper().writeValue(response.getOutputStream(), tokenMap);
     }
 
     private record Credentials(

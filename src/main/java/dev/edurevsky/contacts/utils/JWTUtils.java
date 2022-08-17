@@ -15,6 +15,9 @@ public class JWTUtils {
 
     private final String applicationSecret = "secret";
     private final Integer expirationLimit = 60 * 60 * 2 * 1000; // 2 Hours
+    private final Integer refreshTokenExpirationLimit = 60 * 60 * 24 * 7 * 1000; // 1 Week
+    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private final String typ = Header.JWT_TYPE;
 
     private final UserDetailsService userDetailsService;
 
@@ -23,12 +26,19 @@ public class JWTUtils {
     }
 
     public String generateToken(String username, Collection<? extends GrantedAuthority> authorities) {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-        String typ = Header.JWT_TYPE;
         return Jwts.builder()
                 .setSubject(username)
                 .claim("roles", authorities)
                 .setExpiration(new Date(System.currentTimeMillis() + expirationLimit))
+                .signWith(signatureAlgorithm, applicationSecret)
+                .setHeaderParam("typ", typ)
+                .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationLimit))
                 .signWith(signatureAlgorithm, applicationSecret)
                 .setHeaderParam("typ", typ)
                 .compact();
@@ -49,9 +59,19 @@ public class JWTUtils {
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
-    private Jws<Claims> parseClaims(String jwtToken) {
+    public Jws<Claims> parseClaims(String jwtToken) {
         return Jwts.parser()
                 .setSigningKey(applicationSecret)
                 .parseClaimsJws(jwtToken);
+    }
+
+    public String getJwt(String token) {
+        if (token == null) {
+            return null;
+        }
+        if (token.startsWith("Bearer ")) {
+            return token.substring(7);
+        }
+        return null;
     }
 }
