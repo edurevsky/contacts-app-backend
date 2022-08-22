@@ -14,6 +14,7 @@ import java.util.Date;
 public class JWTUtils {
 
     private final String applicationSecret = "secret";
+    // private final Integer testExpirationLimit = 60 * 1 * 1000;
     private final Integer expirationLimit = 60 * 60 * 2 * 1000; // 2 Hours
     private final Integer refreshTokenExpirationLimit = 60 * 60 * 24 * 7 * 1000; // 1 Week
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

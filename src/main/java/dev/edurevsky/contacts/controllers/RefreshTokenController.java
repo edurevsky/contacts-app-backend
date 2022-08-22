@@ -1,7 +1,6 @@
 package dev.edurevsky.contacts.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.edurevsky.contacts.models.ApplicationUser;
 import dev.edurevsky.contacts.utils.JWTUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,10 +20,12 @@ public class RefreshTokenController {
 
     private final JWTUtils jwtUtils;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
-    public RefreshTokenController(JWTUtils jwtUtils, UserDetailsService userDetailsService) {
+    public RefreshTokenController(JWTUtils jwtUtils, UserDetailsService userDetailsService, ObjectMapper objectMapper) {
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping
@@ -40,6 +41,6 @@ public class RefreshTokenController {
         response.addHeader("Authorization", "Bearer " + newToken);
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("refreshToken", refreshToken.substring(7));
-        new ObjectMapper().writeValue(response.getOutputStream(), tokenMap);
+        objectMapper.writeValue(response.getOutputStream(), tokenMap);
     }
 }

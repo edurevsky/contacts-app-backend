@@ -1,5 +1,6 @@
 package dev.edurevsky.contacts.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.edurevsky.contacts.filters.JWTAuthenticationFilter;
 import dev.edurevsky.contacts.filters.JWTLoginFilter;
 import dev.edurevsky.contacts.utils.JWTUtils;
@@ -22,10 +23,12 @@ public class SecurityConfiguration {
 
     private final JWTUtils jwtUtils;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final ObjectMapper objectMapper;
 
-    public SecurityConfiguration(JWTUtils jwtUtils, AuthenticationConfiguration authenticationConfiguration) {
+    public SecurityConfiguration(JWTUtils jwtUtils, AuthenticationConfiguration authenticationConfiguration, ObjectMapper objectMapper) {
         this.jwtUtils = jwtUtils;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -45,7 +48,7 @@ public class SecurityConfiguration {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
-                .addFilterBefore(new JWTLoginFilter(jwtUtils, authenticationConfiguration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTLoginFilter(jwtUtils, authenticationConfiguration.getAuthenticationManager(), objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
