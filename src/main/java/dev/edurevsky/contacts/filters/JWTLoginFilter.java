@@ -48,7 +48,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("refreshToken", refreshToken);
         response.setContentType("application/json");
-        new ObjectMapper().writeValue(response.getOutputStream(), tokenMap);
+        objectMapper.writeValue(response.getOutputStream(), tokenMap);
     }
 
     private record Credentials(
