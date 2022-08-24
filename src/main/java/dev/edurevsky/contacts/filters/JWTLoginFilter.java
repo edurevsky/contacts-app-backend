@@ -45,10 +45,12 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtils.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
         String refreshToken = jwtUtils.generateRefreshToken(userDetails.getUsername());
         response.addHeader("Authorization", "Bearer " + token);
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("refreshToken", refreshToken);
+        Map<String, Object> returnValue = new HashMap<>();
+        returnValue.put("refreshToken", refreshToken);
+        Long userId = userDetails.getUser().getId();
+        returnValue.put("userId", userId);
         response.setContentType("application/json");
-        objectMapper.writeValue(response.getOutputStream(), tokenMap);
+        objectMapper.writeValue(response.getOutputStream(), returnValue);
     }
 
     private record Credentials(
