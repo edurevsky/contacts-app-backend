@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public record NewContactRequest(
     @NotBlank(message = "O Nome não pode estar em branco.")
@@ -15,5 +16,7 @@ public record NewContactRequest(
     String number,
     @NotBlank(message = "A url da imagem é obrigatória.")
     @URL(message = "É necessário inserir uma url válida.")
-    String pictureUrl
+    String pictureUrl,
+    @NotNull(message = "O id do usuário não pode ser nula.")
+    Long userId
 ) { }
