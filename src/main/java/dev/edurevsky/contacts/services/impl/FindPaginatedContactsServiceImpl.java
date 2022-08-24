@@ -1,6 +1,7 @@
 package dev.edurevsky.contacts.services.impl;
 
 import dev.edurevsky.contacts.models.Contact;
+import dev.edurevsky.contacts.models.User;
 import dev.edurevsky.contacts.repositories.ContactRepository;
 import dev.edurevsky.contacts.services.FindPaginatedContactsService;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ public class FindPaginatedContactsServiceImpl implements FindPaginatedContactsSe
     }
 
     @Override
-    public Page<Contact> execute(Pageable pageable) {
-        return contactRepository.findAll(pageable);
+    public Page<Contact> execute(Pageable pageable, User user) {
+        return contactRepository.findAllByUser(pageable, user);
     }
 }

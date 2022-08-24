@@ -2,6 +2,7 @@ package dev.edurevsky.contacts.controllers;
 
 import dev.edurevsky.contacts.dtos.NewContactRequest;
 import dev.edurevsky.contacts.dtos.UpdateContactRequest;
+import dev.edurevsky.contacts.models.ApplicationUser;
 import dev.edurevsky.contacts.models.Contact;
 import dev.edurevsky.contacts.services.DeleteContactByIdService;
 import dev.edurevsky.contacts.services.FindContactByIdService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -43,6 +45,7 @@ public class ContactController {
         this.updateContactService = updateContactService;
     }
 
+    @Transactional
     @PostMapping
     public ResponseEntity<Contact> save(@RequestBody @Valid NewContactRequest request, UriComponentsBuilder uriBuilder) {
         Contact contact = saveContactService.execute(request);
@@ -57,8 +60,11 @@ public class ContactController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Contact>> findAllPaginated(@PageableDefault(size = 15, sort = {"name"}) Pageable pageable) {
-        Page<Contact> contacts = findPaginatedContactsService.execute(pageable);
+    public ResponseEntity<Page<Contact>> findAllPaginated(
+            @PageableDefault(size = 15, sort = {"name"}) Pageable pageable,
+            @AuthenticationPrincipal ApplicationUser appUser
+    ) {
+        Page<Contact> contacts = findPaginatedContactsService.execute(pageable, appUser.getUser());
         return ResponseEntity.ok(contacts);
     }
 
