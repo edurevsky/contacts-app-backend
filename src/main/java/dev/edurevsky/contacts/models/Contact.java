@@ -1,5 +1,7 @@
 package dev.edurevsky.contacts.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -23,6 +25,10 @@ public class Contact {
 
     @Column(name = "pic_url", nullable = false)
     private String pictureUrl;
+
+    @JsonIgnore
+    @ManyToOne
+    private User user;
 
     public Contact() {
 
@@ -66,5 +72,13 @@ public class Contact {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
