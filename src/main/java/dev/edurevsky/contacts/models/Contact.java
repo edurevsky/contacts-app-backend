@@ -31,7 +31,7 @@ public class Contact {
     private User user;
 
     @Column(name = "fav")
-    private Boolean favorite;
+    private Boolean favorite = false;
 
     public Contact() {
 
