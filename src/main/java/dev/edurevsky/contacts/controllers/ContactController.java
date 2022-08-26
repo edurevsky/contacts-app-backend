@@ -4,11 +4,7 @@ import dev.edurevsky.contacts.dtos.NewContactRequest;
 import dev.edurevsky.contacts.dtos.UpdateContactRequest;
 import dev.edurevsky.contacts.models.ApplicationUser;
 import dev.edurevsky.contacts.models.Contact;
-import dev.edurevsky.contacts.services.DeleteContactByIdService;
-import dev.edurevsky.contacts.services.FindContactByIdService;
-import dev.edurevsky.contacts.services.FindPaginatedContactsService;
-import dev.edurevsky.contacts.services.SaveContactService;
-import dev.edurevsky.contacts.services.impl.UpdateContactServiceImpl;
+import dev.edurevsky.contacts.services.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,19 +26,22 @@ public class ContactController {
     private final FindContactByIdService findContactByIdService;
     private final FindPaginatedContactsService findPaginatedContactsService;
     private final DeleteContactByIdService deleteContactByIdService;
-    private final UpdateContactServiceImpl updateContactService;
+    private final UpdateContactService updateContactService;
+    private final SwitchFavoriteContactService switchFavoriteContactService;
 
     public ContactController(
             SaveContactService saveContactService,
             FindContactByIdService findContactByIdService,
             FindPaginatedContactsService findPaginatedContactsService,
             DeleteContactByIdService deleteContactByIdService,
-            UpdateContactServiceImpl updateContactService) {
+            UpdateContactService updateContactService,
+            SwitchFavoriteContactService switchFavoriteContactService) {
         this.saveContactService = saveContactService;
         this.findContactByIdService = findContactByIdService;
         this.findPaginatedContactsService = findPaginatedContactsService;
         this.deleteContactByIdService = deleteContactByIdService;
         this.updateContactService = updateContactService;
+        this.switchFavoriteContactService = switchFavoriteContactService;
     }
 
     @Transactional
@@ -78,6 +77,13 @@ public class ContactController {
     @PutMapping
     public ResponseEntity<Contact> update(@RequestBody UpdateContactRequest request) {
         Contact contact = updateContactService.execute(request);
+        return ResponseEntity.ok(contact);
+    }
+
+    @Transactional
+    @PutMapping("/favorite/{id}")
+    public ResponseEntity<Contact> switchFavorite(@PathVariable("id") Long id) {
+        Contact contact = switchFavoriteContactService.execute(id);
         return ResponseEntity.ok(contact);
     }
 }
