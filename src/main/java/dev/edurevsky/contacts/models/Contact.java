@@ -30,8 +30,15 @@ public class Contact {
     @ManyToOne
     private User user;
 
+    @Column(name = "fav")
+    private Boolean favorite;
+
     public Contact() {
 
+    }
+
+    public void switchFavorite() {
+        this.favorite = !this.favorite;
     }
 
     public void setId(Long id) {
@@ -80,5 +87,9 @@ public class Contact {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Boolean getFavorite() {
+        return favorite;
     }
 }
